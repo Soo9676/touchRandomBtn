@@ -21,6 +21,7 @@ class ViewController: UIViewController {
     
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var timerButton: UIButton!
     
     let sectionInsets = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
     
@@ -28,25 +29,156 @@ class ViewController: UIViewController {
     var derivedArray: Array<Int> = [1,2,3,4,5,6,7,8,9]
     var nthTab: Int = 1
     
+    var timer: Timer?
+    var timerNum: Int = 0
     
+    func startTimer() {
+        if timer != nil, timer!.isValid {
+            timer!.invalidate()
+        }
+        
+        timerNum = 0
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerCallBack), userInfo: nil, repeats: true)
+    }
+    
+    @objc func timerCallBack() {
+        self.timerButton.setTitle("\(timerNum)", for: .normal)
+        //cell들을 배열에 담음
+        let cells = self.collectionView.visibleCells
+        //각 cell들의 indexPath를 받아옴
+        let indexPaths = self.collectionView.indexPath(for: cells[0])
+        
+        
+        for i in 0...8 {
+            if i == timerNum {
+                for cell in cells {
+                    guard let cell = cell as? MyCollectionViewCell else {return}
+                    if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+                        cell.contentView.isHidden = false
+                    } else {
+                        cell.contentView.isHidden = true
+                    }
+                }
+            }
+        }
+//        switch timerNum {
+//        case 0:
+//            
+//        case 1:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 2:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 3:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 4:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 5:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 6:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 7:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        case 8:
+//            for cell in cells {
+//                guard let cell = cell as? MyCollectionViewCell else {return}
+//                if cell.myButton.titleLabel?.text == String(timerNum + 1) {
+//                    cell.contentView.isHidden = false
+//                } else {
+//                    cell.contentView.isHidden = true
+//                }
+//            }
+//        
+//        default:
+//            print("cannot update cell")
+//        }
+        
+        timerNum += 1
+        
+        if timerNum == 10 {
+            for cell in cells {
+                guard let cell = cell as? MyCollectionViewCell else {return}
+                cell.contentView.isHidden = true
+            }
+            timer?.invalidate()
+            timer = nil
+        }
+    }
     func showButtonsInOrder() {
         for (index, element) in derivedArray.enumerated(){
             print("\(index)번째 element of derivedArray \(element) appeared")
+            //cell 업데이트
         }
     }
     
-    func resetButtonsOrder() {
-        derivedArray = originalArray
-        collectionView.reloadData()
+    func resetNthTab() {
+        nthTab = 1
     }
     
+//    func resetButtonsOrder() {
+//        derivedArray = originalArray
+//        collectionView.reloadData()
+//    }
+    
     @IBAction func tapStartButton(_ sender: Any) {
+        let cells = self.collectionView.visibleCells
+        for cell in cells {
+            guard let cell = cell as? MyCollectionViewCell else {return}
+            cell.contentView.isHidden = true
+        }
         derivedArray = originalArray.shuffled()
         collectionView.reloadData()
         nthTab = 1
         showButtonsInOrder()
-        
-//        resetButtonsOrder()
+        startTimer()
     }
     
 }
@@ -77,6 +209,7 @@ extension ViewController: UICollectionViewDelegate {
             guard Int(buttonText) == derivedArray.count else {
                 nthTab += 1
                 cell.myButton.backgroundColor = .yellow
+                cell.contentView.isHidden = false
                 return
             }
             cell.myButton.backgroundColor = .blue
@@ -86,9 +219,9 @@ extension ViewController: UICollectionViewDelegate {
             present(alert, animated: false, completion: nil)
         } else {
             cell.myButton.backgroundColor = .red
-            let alert = UIAlertController(title: "실패", message: "순서 맞추기 실패🥲\n다시 시도하시겠습니까?", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "Ok", style: .destructive, handler: tapStartButton(_:))
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            let alert = UIAlertController(title: "실패", message: "순서 맞추기 실패🥲\n리셋하시겠습니까?", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "새로", style: .destructive, handler: tapStartButton(_:))
+            let cancelAction = UIAlertAction(title: "이어서", style: .cancel, handler: nil)
             alert.addAction(okAction)
             alert.addAction(cancelAction)
             present(alert, animated: false, completion: nil)
