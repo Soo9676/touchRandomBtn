@@ -93,7 +93,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3gh-nt-yzN">
-                                        <rect key="frame" x="179" y="594" width="56" height="31"/>
+                                        <rect key="frame" x="145" y="594" width="124" height="31"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Start"/>
                                         <connections>
@@ -106,6 +106,7 @@
                                     <constraint firstItem="3gh-nt-yzN" firstAttribute="top" secondItem="iFL-xG-ZiT" secondAttribute="bottom" constant="41.5" id="Iml-3l-5Cr"/>
                                     <constraint firstItem="iFL-xG-ZiT" firstAttribute="width" secondItem="RV8-px-Vk0" secondAttribute="width" multiplier="0.8" id="dBk-17-AVl"/>
                                     <constraint firstItem="iFL-xG-ZiT" firstAttribute="centerX" secondItem="RV8-px-Vk0" secondAttribute="centerX" id="e0a-kt-pbQ"/>
+                                    <constraint firstItem="3gh-nt-yzN" firstAttribute="width" secondItem="RV8-px-Vk0" secondAttribute="width" multiplier="0.3" id="jDD-Ei-7Vt"/>
                                     <constraint firstItem="3gh-nt-yzN" firstAttribute="centerX" secondItem="iFL-xG-ZiT" secondAttribute="centerX" id="qDK-eS-ILg"/>
                                     <constraint firstItem="iFL-xG-ZiT" firstAttribute="centerY" secondItem="RV8-px-Vk0" secondAttribute="centerY" id="qDh-yx-Vdw"/>
                                 </constraints>
